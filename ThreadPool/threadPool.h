@@ -58,7 +58,7 @@ public :
             }
 
             if(task) {
-                task() ; 
+                task() ; //执行队列弹出的任务函数。
             }
         }
         printf("end work thread: %d\n", std::this_thread::get_id());
