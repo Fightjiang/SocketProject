@@ -40,7 +40,7 @@ param3: WNOHANG 如果pid指定的子进程没有结束，则waitpid()函数立�
 如果结束了，则返回该子进程的进程号。
 */
 void wait_child(int signo) {
-    while(waitpid(0 , NULL , WNOHANG) > 0) ; 
+    while(waitpid(0 , NULL , WNOHANG) == 0) ; 
     return ;
 }
  
