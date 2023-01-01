@@ -177,6 +177,7 @@ int main(int argc, char *argv[]) {
     while (1) {
         //epoll_events_count表示就绪事件的数目
         int epoll_events_count = epoll_wait(epfd, events, EPOLL_SIZE, -1);
+        // 可以把epoll_wait得到的描述符用多线程处理
         if (epoll_events_count < 0) {
             perror("epoll failure");
             break;
@@ -198,36 +199,25 @@ int main(int argc, char *argv[]) {
                        ntohs(client_address.sin_port), // 
                        clientfd);
                 sleep(1) ; // 第一次客户端链接之后，客服端会发送名字，服务器阻塞 1 秒，不要注册 clientfd
+                // 可以通过判断 map 是否存在，来判断是不是第一次传输数据过来，如果是第一次传输数据，那么一定会是 name ，然后再发送欢迎消息即可，这样就不用阻塞 1 秒
                 addfd(epfd, clientfd, true);
 
-                // 服务端保存用户名字
-                char name[BUF_SIZE] ; 
-                recv(clientfd, name, BUF_SIZE, 0);
-
-                clients_list[clientfd] = name ; 
-                name_list[name] = clientfd  ;
-                cout<< "Add new username = "<< name  <<" to epoll\n" ;
-                printf("Now there are %d clients int the chat room\n", (int) clients_list.size());
+                 
 
                 // 服务端发送欢迎信息
                 printf("welcome chatting\n");
                 char message[BUF_SIZE];
                 bzero(message, BUF_SIZE);
-                sprintf(message, SERVER_WELCOME, name );
+                sprintf(message, SERVER_WELCOME );
                 int ret = send(clientfd, message, BUF_SIZE, 0);
 
                 if (ret < 0) {
                     error("send error");
                 }
 
-                // 群发有用户加入的信息
-                bzero(message, BUF_SIZE);
-                sprintf(message, SERVER_COME, name );
-                sendBroadcastmessage(clientfd , message) ; 
-            
-
             } else {     
                 //处理用户发来的消息，并广播，使其他用户收到信息
+                // 这个可以再加一个多线程处理
                 int ret = sendmessage(sockfd);
                 if (ret < 0) {
                     error("error");

@@ -10,18 +10,18 @@ queue<int> q ;
 mutex mutex1 , mutex2 ; 
 condition_variable produce , consume ; 
 int maxSize = 20 ; 
-
+// 生产者与消费者存在同步关系，而且各个生产者之间、各个消费者之间存在互斥关系,他们必须互斥地访问缓冲区。
 void producer() {
 	while(true) {
 
 		std::unique_lock<mutex> locker(mutex1) ; 
 		produce.wait(locker , []{return q.size() != maxSize ; }) ; 
 
-		mutex2.lock() ; // 互斥使用队列
+		//mutex2.lock() ; // 互斥使用队列
 		int tmpNumber = rand() % 100 ; 
 		cout << "-> " << this_thread::get_id() << " produce number : " << tmpNumber <<" size = " << q.size() << endl ;
 		q.push(tmpNumber) ; 
-		mutex2.unlock() ; 
+		//mutex2.unlock() ; 
 
 		consume.notify_all() ; 
 	}
@@ -32,10 +32,10 @@ void consumer() {
 		std::unique_lock<mutex> locker(mutex1) ; 
 		consume.wait(locker , []{return q.empty() == false ; }) ; 
 
-		mutex2.lock() ; // 互斥使用队列
+		//mutex2.lock() ; // 互斥使用队列
 		cout << "-> " << this_thread::get_id() << " consume number : " << q.front() <<" size = " << q.size() << endl ;
 		q.pop() ;
-		mutex2.unlock() ; 
+		//mutex2.unlock() ; 
 
 		produce.notify_all() ;
 	}

@@ -57,8 +57,9 @@ int main(void){
 
     listen(sockSer, LISTEN_QUEUE);
     int sockConn;   
+    printf("Server Wait Client Connect.......\n");
     while(1){
-        printf("Server Wait Client Connect.......\n");
+       
         sockConn = accept(sockSer, (struct sockaddr*)&addrCli, &len);
         if(sockConn == -1){
             printf("Server Accept Client Connect Fail.\n");

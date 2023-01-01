@@ -72,7 +72,7 @@ void addfd(int epollfd, int fd, bool enable_et) {
         ev.events = EPOLLIN | EPOLLET;
     }
     /*
-    将 fd 设置成非阻塞，防止出现 read 阻塞，导致无法调用 epoll_wait ，进而导致无法响应客户端请求，最终死锁
+    ET 模式，就需要加循环读或写，并且要将 fd 设置成非阻塞，防止出现 read 阻塞，导致无法调用 epoll_wait ，进而导致无法响应其他客户端请求，导致整个服务“卡住”
     */
     setnonblockint(fd); 
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);

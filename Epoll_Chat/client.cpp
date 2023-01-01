@@ -27,20 +27,8 @@ int main(int argc, char *argv[]) {
 
     printf("Welcome to chat room ~  \nIf you want to exit , Please input 'exit' to exit the chat room\n");
     printf("If you want to chatting , Please input your name \n") ; 
-    char name[BUF_SIZE];
-    while(1) {
-         cin >> name ; 
-        // 客户端通过 map 保存 clientfd 和 name 的 
-        if(name == "exit"){
-            close(clientfd) ; 
-            return 0 ; 
-        }
-        if(name_list[name] == 0){
-            break; 
-        } else {
-            cout<<"already exit" <<endl ;
-        }
-    }
+    const char *name = "test1" ; 
+     
     // 2:连接服务端
     if (connect(clientfd, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0) {
         error("connect error");
